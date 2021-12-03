@@ -1,0 +1,32 @@
+﻿{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:47744",
+      "sslPort": 44390
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "identity_server_oidc": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "launchBrowser": true,
+      "applicationUrl": "https://+:5001",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        // "ASPNETCORE_URLS": "https://+:5001",
+        // "ASPNETCORE_HTTPS_PORT": "5001",
+        "ASPNETCORE_Kestrel__Certificates__Default__Path": "/Users/rosered/Documents/self-sign/identity_oidc/localhost.crt",
+        "ASPNETCORE_Kestrel__Certificates__Default__KeyPath": "/Users/rosered/Documents/self-sign/identity_oidc/localhost.key"
+      }
+    }
+  }
+}
