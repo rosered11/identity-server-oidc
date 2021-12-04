@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using client_mvc.Client;
+using IdentityModel;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +13,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace client_mvc
 {
@@ -39,15 +42,27 @@ namespace client_mvc
 
                 options.ClientId = "default2Client";
                 options.ClientSecret = "secret";
-                options.ResponseType = "code";
+                options.ResponseType = "code id_token";
                 options.Scope.Add("address");
                 options.Scope.Add("email");
+                options.Scope.Add("defaultApi");
+                options.Scope.Add("roles");
+
+                options.ClaimActions.MapUniqueJsonKey("role", "role");
 
                 options.SaveTokens = true;
 
                 options.GetClaimsFromUserInfoEndpoint = true;
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = JwtClaimTypes.GivenName,
+                    RoleClaimType = JwtClaimTypes.Role
+                };
             })
             ;
+
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

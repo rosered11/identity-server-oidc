@@ -12,6 +12,9 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using client_mvc.Client;
+using System.Net.Http;
+using IdentityModel.Client;
+using System.Text.Json;
 
 namespace client_mvc.Controllers
 {
@@ -40,6 +43,42 @@ namespace client_mvc.Controllers
             return View();
         }
 
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            var client = new HttpClient();
+
+            var discoveryDoc = await client.GetDiscoveryDocumentAsync("https://localhost:5001");
+
+            if(discoveryDoc.IsError)
+            {
+                return BadRequest("Cann't get discovery.");
+            }
+
+            var accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+
+            var userInfo = await client.GetUserInfoAsync(
+                new UserInfoRequest{
+                    Address = discoveryDoc.UserInfoEndpoint,
+                    Token = accessToken
+                }
+            );
+
+            if (userInfo.IsError){
+                return BadRequest("Cann't get user info.");
+            }
+
+            var userInfoDic = new Dictionary<string, string>();
+
+            foreach(var claim in userInfo.Claims)
+            {
+                userInfoDic.Add(claim.Type, claim.Value);
+            }
+
+            Console.WriteLine(JsonSerializer.Serialize(userInfoDic));
+            return View();
+        }
+
         public async Task Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -48,7 +87,7 @@ namespace client_mvc.Controllers
 
         public async Task LogTokenAndClaims()
         {
-            var identityToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
+            var identityToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
 
             Console.WriteLine($"Identity token: {identityToken}");
 
