@@ -17,28 +17,6 @@ namespace client_mvc.Client
         }
         public async Task<string> GetResourceFromProtectApi()
         {
-            // var apiCredential = new ClientCredentialsTokenRequest{
-            //     Address = "https://localhost:5001/connect/token",
-            //     ClientId = "defaultClient",
-            //     ClientSecret = "secret",
-            //     Scope = "defaultApi"
-            // };
-
-            // var client = new HttpClient();
-
-            // var discoveryDoc = await client.GetDiscoveryDocumentAsync("https://localhost:5001");
-
-            // if(discoveryDoc.IsError)
-            // {
-            //     return "Cann't get discovery.";
-            // }
-
-            // var token = await client.RequestClientCredentialsTokenAsync(apiCredential);
-            // if(token.IsError)
-            // {
-            //     return "Unauthorize.";
-            // }
-
             var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
             var apiClient = new HttpClient();
 

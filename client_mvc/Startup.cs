@@ -38,12 +38,12 @@ namespace client_mvc
             })
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options => {
-                options.Authority = "https://localhost:5001";
+                options.Authority = "https://identity-server-4213.herokuapp.com";
 
-                options.ClientId = "default2Client";
-                options.ClientSecret = "secret";
+                options.ClientId = "default3Client";
+                options.ClientSecret = "mvckeyto";
                 options.ResponseType = "code id_token";
-                options.Scope.Add("address");
+                // options.Scope.Add("address");
                 options.Scope.Add("email");
                 options.Scope.Add("defaultApi");
                 options.Scope.Add("roles");
@@ -78,7 +78,15 @@ namespace client_mvc
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            //app.UseHttpsRedirection();
+
+            // Set schema for https if use https
+            // app.Use((context, next) =>
+            // {
+            //     context.Request.Scheme = "https";
+            //     return next();
+            // });
+
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

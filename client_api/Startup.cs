@@ -1,8 +1,11 @@
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -30,13 +33,22 @@ namespace client_api
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options => {
                     options.Authority = "https://localhost:5001";
+                    var logger = services.BuildServiceProvider().GetRequiredService<ILogger<JwtBearerHandler>>();
                     options.TokenValidationParameters = new TokenValidationParameters{
                         ValidateAudience = false
+                    };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
+                        {
+                            logger.LogWarning(context.Exception, "Unauthorized request.");
+                            return Task.CompletedTask;
+                        },
                     };
                 });
 
             services.AddAuthorization(options => {
-                options.AddPolicy("ClientIdPolicy", policy => policy.RequireClaim("client_id", "defaultClient", "default2Client"));
+                options.AddPolicy("ClientIdPolicy", policy => policy.RequireClaim("client_id", "defaultClient", "default2Client", "default3Client"));
             });
         }
 
@@ -51,6 +63,12 @@ namespace client_api
             }
 
             //app.UseHttpsRedirection();
+            // Set schema https for use https
+            // app.Use((context, next) =>
+            // {
+            //     context.Request.Scheme = "https";
+            //     return next();
+            // });
 
             app.UseRouting();
 

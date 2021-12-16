@@ -56,6 +56,14 @@ namespace identity_server_oidc
             }
             
             app.UseStaticFiles();
+
+            // set schema for https if use https
+            // app.Use((context, next) =>
+            // {
+            //     context.Request.Scheme = "https";
+            //     return next();
+            // });
+
             app.UseRouting();
 
             app.UseIdentityServer();
