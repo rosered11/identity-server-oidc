@@ -38,14 +38,14 @@ namespace client_mvc
             })
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options => {
-                options.Authority = "https://identity-server-4213.herokuapp.com";
+                options.Authority = "https://localhost:5001";
 
                 options.ClientId = "default3Client";
                 options.ClientSecret = "mvckeyto";
-                options.ResponseType = "code id_token";
-                // options.Scope.Add("address");
-                options.Scope.Add("email");
-                options.Scope.Add("defaultApi");
+                options.ResponseType = "code";
+                options.Scope.Add("openid");
+                options.Scope.Add("passbook_api");
+                options.Scope.Add("profile");
                 options.Scope.Add("roles");
 
                 options.ClaimActions.MapUniqueJsonKey("role", "role");
@@ -56,7 +56,7 @@ namespace client_mvc
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    NameClaimType = JwtClaimTypes.GivenName,
+                    NameClaimType = JwtClaimTypes.Name,
                     RoleClaimType = JwtClaimTypes.Role
                 };
             })
